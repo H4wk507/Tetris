@@ -20,8 +20,10 @@ void startSinglePlayer(sf::RenderWindow& window) {
 	srand(time(nullptr));
 
 	vector<Tetromino> minos; // minos that have LANDED
-	Tetromino tmp(rand() % NUM_SHAPES);
-
+	int option = rand() % NUM_SHAPES;
+	Tetromino tmp(option, matrix);
+	tmp.reset(option, matrix);
+		
 	while (window.isOpen()) {
 		double time = clock.getElapsedTime().asSeconds();
 		clock.restart();
@@ -65,7 +67,14 @@ void startSinglePlayer(sf::RenderWindow& window) {
 				if (timer > delay) {
 					if (!tmp.move_down(matrix)) {
 						minos.push_back(tmp);
-						tmp = Tetromino(rand() % NUM_SHAPES);
+
+						// generate next tetromino
+						option = rand() % NUM_SHAPES;
+						tmp = Tetromino(option, matrix);
+
+						// if we cant place a block; reset the game
+						if (!tmp.reset(option, matrix))
+							minos.clear();
 					}
 
 					// 2 tablice, prev state i curr state

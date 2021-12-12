@@ -56,10 +56,11 @@ void Tetromino::move_right(const vector<vector<int>>& i_matrix) {
 	}
 }
 
-void Tetromino::reset(char shape) {
-	
-	switch (shape) {
-		// i j l s t z 
+bool Tetromino::reset(int shape, vector<vector<int>>& i_matrix) {
+	static const char* options = "OIJLSTZ";
+	char option = options[shape];
+
+	switch (option) {
 	case 'O': // square
 		minos[0] = { COLUMNS / 2 - 1, 0 };
 		minos[1] = { COLUMNS / 2, 0 };
@@ -106,6 +107,11 @@ void Tetromino::reset(char shape) {
 		cerr << "Incorrect shape!\n";
 		break;
 	}
+
+	for (auto& mino : minos)
+		if (i_matrix[mino.y][mino.x]) return 0;
+
+	return 1;
 }
 
 void Tetromino::update_matrix(vector<vector<int>>& i_matrix) {
@@ -113,7 +119,7 @@ void Tetromino::update_matrix(vector<vector<int>>& i_matrix) {
 		i_matrix[mino.y][mino.x] = 1;
 }
  
-Tetromino::Tetromino(int shape) {
+Tetromino::Tetromino(int shape, vector<vector<int>>& i_matrix) {
 	static const char* options = "OIJLSTZ";
 	char option = options[shape];
 
@@ -127,7 +133,6 @@ Tetromino::Tetromino(int shape) {
 	case 'Z':
 		minos.resize(4);
 		color = cell_color[shape];
-		reset(option);
 		break;
 	default:
 		break;
