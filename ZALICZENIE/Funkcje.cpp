@@ -2,7 +2,6 @@
 #include "Tetromino.h"
 
 
-
 // update the state of tetrominos
 void update(vector<Tetromino>& minos, vector<vector<int>>& matrix) {
 	for (auto& a : matrix)
@@ -55,9 +54,13 @@ void startSinglePlayer(sf::RenderWindow& window) {
 
 				for (auto& a : tmp.get_minos()) 
 					if (x == a.x && y == a.y) 
-						cell.setFillColor(sf::Color(255, 0, 0));
+						cell.setFillColor(tmp.get_color());
+
 				if (matrix[y][x] == 1)
-					cell.setFillColor(sf::Color(255, 0, 0));
+					for (auto& mino : minos)
+						for (auto &a : mino.get_minos())
+							if (a.x == x && a.y == y)
+								cell.setFillColor(mino.get_color());
 
 				if (timer > delay) {
 					if (!tmp.move_down(matrix)) {

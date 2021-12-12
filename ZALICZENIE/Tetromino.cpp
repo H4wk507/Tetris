@@ -1,34 +1,17 @@
 #include "Tetromino.h"
 
-int Tetromino::maxY() {
-	int best = 0;
-	for (const auto& mino : minos) {
-		if (mino.y > best) 
-			best = mino.y;
-	}
-	return best;
-}
+vector<sf::Color> cell_color{
+	sf::Color(255, 255, 0),
+	sf::Color(0, 255, 255),
+	sf::Color(0, 0, 255),
+	sf::Color(255, 165, 0),
+	sf::Color(0, 128, 0),
+	sf::Color(128, 0, 128),
+	sf::Color(255, 0, 0),
+};
 
-int Tetromino::minX() {
-	int best = COLUMNS;
-	for (auto& mino : minos) {
-		if (mino.x < best)
-			best = mino.x;
-	}
-	return best;
-}
-
-int Tetromino::maxX() {
-	int best = 0;
-	for (auto& mino : minos) {
-		if (mino.x > best)
-			best = mino.x;
-	}
-	return best;
-}
 
 bool Tetromino::move_down(const vector<vector<int>>& i_matrix) {
-	int maxy = Tetromino::maxY();
 
 	for (auto& mino : minos) {
 		if (ROWS == mino.y + 1)
@@ -45,7 +28,7 @@ bool Tetromino::move_down(const vector<vector<int>>& i_matrix) {
 }
 
 void Tetromino::move_left(const vector<vector<int>>& i_matrix) {
-	int minx = minX();
+
 	for (auto& mino : minos) {
 		if (mino.x == 0)
 			return;
@@ -60,7 +43,6 @@ void Tetromino::move_left(const vector<vector<int>>& i_matrix) {
 }
 
 void Tetromino::move_right(const vector<vector<int>>& i_matrix) {
-	int maxx = maxX();
 	for (auto& mino : minos) {
 		if (mino.x == COLUMNS - 1)
 			return;
@@ -144,6 +126,7 @@ Tetromino::Tetromino(int shape) {
 	case 'T':
 	case 'Z':
 		minos.resize(4);
+		color = cell_color[shape];
 		reset(option);
 		break;
 	default:
@@ -154,4 +137,8 @@ Tetromino::Tetromino(int shape) {
 
 vector<sf::Vector2i> Tetromino::get_minos() {
 	return minos;
+}
+
+sf::Color Tetromino::get_color() {
+	return color;
 }

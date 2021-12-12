@@ -11,6 +11,7 @@ class Tetromino
 {
 private:
 	vector<sf::Vector2i> minos; // vector of points
+	sf::Color color;
 public:
 	Tetromino(int shape);
 	bool move_down(const vector<vector<int>>& i_matrix);
@@ -23,6 +24,6 @@ public:
 	int maxX();
 
 	vector<sf::Vector2i> get_minos();
-
+	sf::Color get_color();
 };
 
