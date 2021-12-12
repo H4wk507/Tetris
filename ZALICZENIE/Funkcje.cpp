@@ -20,9 +20,8 @@ void startSinglePlayer(sf::RenderWindow& window) {
 	sf::Clock clock;
 	srand(time(nullptr));
 
-	vector<Tetromino> minos;
+	vector<Tetromino> minos; // minos that have LANDED
 	Tetromino tmp(rand() % NUM_SHAPES);
-	minos.push_back(tmp);
 
 	while (window.isOpen()) {
 		double time = clock.getElapsedTime().asSeconds();
@@ -35,11 +34,11 @@ void startSinglePlayer(sf::RenderWindow& window) {
 			case sf::Event::KeyPressed:
 				switch (event.key.code) {
 				case sf::Keyboard::Left:
-					minos.back().move_left(matrix);
+					tmp.move_left(matrix);
 					update(minos, matrix);
 					break;
 				case sf::Keyboard::Right:
-					minos.back().move_right(matrix); 
+					tmp.move_right(matrix); 
 					update(minos, matrix);
 					break;
 				}
@@ -51,18 +50,28 @@ void startSinglePlayer(sf::RenderWindow& window) {
 			for (int x = 0; x < COLUMNS; x++) {
 				cell.setPosition(1.0 * CELL_SIZE * x, 1.0 * CELL_SIZE * y);
 				
-				if (matrix[y][x] == 1)
-					cell.setFillColor(sf::Color(255, 0, 0));
-				else
+				if (matrix[y][x] != 1) // if field not occupied
 					cell.setFillColor(sf::Color(1, 3, 50));
 
+				for (auto& a : tmp.get_minos()) 
+					if (x == a.x && y == a.y) 
+						cell.setFillColor(sf::Color(255, 0, 0));
+				if (matrix[y][x] == 1)
+					cell.setFillColor(sf::Color(255, 0, 0));
+
 				if (timer > delay) {
-					update(minos, matrix);
-					if (!minos.back().move_down(matrix)) {
-						// if block can't move down; create new one
-						Tetromino tmp(rand() % NUM_SHAPES);
+					if (!tmp.move_down(matrix)) {
 						minos.push_back(tmp);
-					}	
+						tmp = Tetromino(rand() % NUM_SHAPES);
+					}
+
+					// 2 tablice, prev state i curr state
+					// jesli curr state najezdza na blok
+					// to zatrzymaj prev state
+					// else zapisz do prev state curr state
+					// int test = minos.back().move_down(matrix);
+					update(minos, matrix);
+
 					timer = 0; // reset timer
 				}
 				window.draw(cell);

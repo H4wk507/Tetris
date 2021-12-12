@@ -33,7 +33,7 @@ bool Tetromino::move_down(const vector<vector<int>>& i_matrix) {
 	for (auto& mino : minos) {
 		if (ROWS == mino.y + 1)
 			return 0;
-		if (mino.y == maxy && i_matrix[1 + static_cast<size_t>(mino.y)][mino.x] == 1)
+		if (i_matrix[1 + static_cast<size_t>(mino.y)][mino.x] == 1)
 			return 0;
 	}
 
@@ -50,7 +50,7 @@ void Tetromino::move_left(const vector<vector<int>>& i_matrix) {
 		if (mino.x == 0)
 			return;
 
-		if (minx == mino.x && i_matrix[mino.y][static_cast<size_t>(mino.x) - 1] == 1)
+		if (i_matrix[mino.y][static_cast<size_t>(mino.x) - 1] == 1)
 			return;
 	}
 
@@ -65,7 +65,7 @@ void Tetromino::move_right(const vector<vector<int>>& i_matrix) {
 		if (mino.x == COLUMNS - 1)
 			return;
 
-		if (maxx == mino.x && i_matrix[mino.y][static_cast<size_t>(mino.x) + 1 == 1])
+		if (i_matrix[mino.y][static_cast<size_t>(mino.x) + 1] == 1)
 			return;
 	}
 
@@ -150,4 +150,8 @@ Tetromino::Tetromino(int shape) {
 		break;
 
 	}
+}
+
+vector<sf::Vector2i> Tetromino::get_minos() {
+	return minos;
 }
