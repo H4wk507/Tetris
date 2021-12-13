@@ -1,22 +1,12 @@
 #include "Tetromino.h"
 
-vector<sf::Color> cell_color{
-	sf::Color(255, 255, 0),
-	sf::Color(0, 255, 255),
-	sf::Color(0, 0, 255),
-	sf::Color(255, 165, 0),
-	sf::Color(0, 128, 0),
-	sf::Color(128, 0, 128),
-	sf::Color(255, 0, 0),
-};
-
 
 bool Tetromino::move_down(const vector<vector<int>>& i_matrix) {
 
 	for (auto& mino : minos) {
 		if (ROWS == mino.y + 1)
 			return 0;
-		if (i_matrix[1 + static_cast<size_t>(mino.y)][mino.x] == 1)
+		if (i_matrix[1 + static_cast<size_t>(mino.y)][mino.x] > 0)
 			return 0;
 	}
 
@@ -30,10 +20,10 @@ bool Tetromino::move_down(const vector<vector<int>>& i_matrix) {
 void Tetromino::move_left(const vector<vector<int>>& i_matrix) {
 
 	for (auto& mino : minos) {
-		if (mino.x == 0)
+		if (mino.x <= 0 || mino.y < 0)
 			return;
 
-		if (i_matrix[mino.y][static_cast<size_t>(mino.x) - 1] == 1)
+		if (i_matrix[mino.y][static_cast<size_t>(mino.x) - 1] > 0)
 			return;
 	}
 
@@ -44,10 +34,10 @@ void Tetromino::move_left(const vector<vector<int>>& i_matrix) {
 
 void Tetromino::move_right(const vector<vector<int>>& i_matrix) {
 	for (auto& mino : minos) {
-		if (mino.x == COLUMNS - 1)
+		if (mino.x >= COLUMNS - 1 || mino.y < 0)
 			return;
 
-		if (i_matrix[mino.y][static_cast<size_t>(mino.x) + 1] == 1)
+		if (i_matrix[mino.y][static_cast<size_t>(mino.x) + 1] > 0)
 			return;
 	}
 
@@ -56,7 +46,7 @@ void Tetromino::move_right(const vector<vector<int>>& i_matrix) {
 	}
 }
 
-bool Tetromino::reset(int shape, vector<vector<int>>& i_matrix) {
+bool Tetromino::reset(vector<vector<int>>& i_matrix) {
 	static const char* options = "OIJLSTZ";
 	char option = options[shape];
 
@@ -115,13 +105,18 @@ bool Tetromino::reset(int shape, vector<vector<int>>& i_matrix) {
 }
 
 void Tetromino::update_matrix(vector<vector<int>>& i_matrix) {
-	for (auto& mino : minos)
-		i_matrix[mino.y][mino.x] = 1;
+	for (auto& mino : minos) {
+		if (mino.y < 0)
+			continue;
+
+		i_matrix[mino.y][mino.x] = 1 + shape;
+	}
 }
  
-Tetromino::Tetromino(int shape, vector<vector<int>>& i_matrix) {
+Tetromino::Tetromino(int i_shape, vector<vector<int>>& i_matrix) {
 	static const char* options = "OIJLSTZ";
-	char option = options[shape];
+	char option = options[i_shape];
+	shape = i_shape;
 
 	switch (option) {
 	case 'O':
@@ -132,7 +127,7 @@ Tetromino::Tetromino(int shape, vector<vector<int>>& i_matrix) {
 	case 'T':
 	case 'Z':
 		minos.resize(4);
-		color = cell_color[shape];
+		color = cell_color[static_cast<size_t>(shape) + 1];
 		break;
 	default:
 		break;
@@ -147,3 +142,12 @@ vector<sf::Vector2i> Tetromino::get_minos() {
 sf::Color Tetromino::get_color() {
 	return color;
 }
+
+int Tetromino::get_shape() {
+	return shape;
+}
+
+void Tetromino::set_mino(int idx, int _x, int _y) {
+	minos[idx].x = _x;
+	minos[idx].y = _y;
+} 
