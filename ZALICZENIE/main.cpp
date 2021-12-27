@@ -1,79 +1,66 @@
-﻿#include <iostream>
-#include <SFML/Graphics.hpp>
+﻿#include <SFML/Graphics.hpp>
 #include "Menu.h"
 #include "Funkcje.h"
 
-using namespace std;
+/*
+*         ___________       __           .__
+*         \__    ___/____ _/  |_ _______ |__|  ______
+*           |    | _/ __ \\   __\\_  __ \|  | /  ___/
+*           |    | \  ___/ |  |   |  | \/|  | \___ \
+*           |____|  \___  >|__|   |__|   |__|/____  >
+*                       \/                        \/ 
+*/
 
 int main()
 {
-    /*** load window ***/
+    /*** wczytaj okno ***/
     sf::RenderWindow window;
-    window.create(sf::VideoMode::VideoMode(CELL_SIZE * COLUMNS * SCREEN_RESIZE,
+    window.create(sf::VideoMode::VideoMode(2 * CELL_SIZE * COLUMNS * SCREEN_RESIZE,
         CELL_SIZE * ROWS * SCREEN_RESIZE), "Tetris", sf::Style::Default);
-    window.setVerticalSyncEnabled(true);
-    window.setView(sf::View(sf::FloatRect(0, 0, CELL_SIZE * COLUMNS, CELL_SIZE * ROWS)));
-
-    /*** load cursor ***/
-    sf::Cursor cursor;
-    if (cursor.loadFromSystem(sf::Cursor::Arrow))
-        window.setMouseCursor(cursor);
-
-    /*** load menu ***/
-    Menu menu(window.getSize().x, window.getSize().y);
+    window.setView(sf::View(sf::FloatRect(0, 0, 2 * CELL_SIZE * COLUMNS, CELL_SIZE * ROWS)));
     
-    /*** main loop ***/
+    /*** wczytaj menu ***/
+    Menu menu(0.8 * CELL_SIZE * COLUMNS, 0.25 * CELL_SIZE * ROWS);
+    
+    /*** główna pętla ***/
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
 
-            /*** handle events ***/
+            /*** input użytkownika ***/
             switch (event.type) {
             case sf::Event::KeyPressed:
                 switch (event.key.code) {
                 case sf::Keyboard::Up:
-                    menu.MoveUp(); break;
+                    menu.MoveUp(); 
+                    break;
                 case sf::Keyboard::Down:
-                    menu.MoveDown(); break;
-                case sf::Keyboard::Return:
+                    menu.MoveDown(); 
+                    break;
+                case sf::Keyboard::Q:
+                    window.close();
+                    break;
+                case sf::Keyboard::Enter:
                     switch (menu.getPressedItem()) {
                     case 0:
                         startSinglePlayer(window);
-                        cout << "Play.\n"; break;
+                        break;
                     case 1:
-                        cout << "Options.\n"; break;
-                    case 2: // exit
-                        window.close(); break;
+                        openInfo(window);
+                        break;
+                    case 2:
+                        window.close();
+                        break;
                     default:
                         break;
                     }
                 default:
                     break;
                 }
-            case sf::Event::MouseButtonReleased:
-                for (int option = 0; option < NUM_ITEMS; option++) {
-                    switch (menu.isMouseOver(window, option)) {
-                    case 0:
-                        cout << "Play.\n"; break;
-                    case 1:
-                        cout << "Options.\n"; break;
-                    case 2:
-                        window.close(); break;
-                    default:
-                        break;
-                    }
-                }
-                    
-
-            case sf::Event::Closed:
-                //window.close(); break;
-            default:
-                break;
             }
         }
-
-        /*** draw to screen ***/
-        window.clear(sf::Color(100, 100, 255));
+        /*** rysuj na ekran ***/
+        window.clear(sf::Color(1, 3, 50)); // ciemnoniebieski
         menu.draw(window);
         window.display();
     }

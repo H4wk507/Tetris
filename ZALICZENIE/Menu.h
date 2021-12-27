@@ -1,24 +1,22 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <iostream>
 #include "Constants.h"
 
-class Menu
-{
+class Menu {
+private:
+	int selectedItemIndex;
+	sf::Texture font_texture;
+	std::vector<std::vector<sf::Sprite>> m_menu;
 public:
 	Menu(double width, double height);
 	~Menu();
 
-	void draw(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window) const;
 	void MoveUp();
 	void MoveDown();
-	int getPressedItem() { return selectedItemIndex; }
-	int isMouseOver(sf::RenderWindow& window, int item);
 
-private:
-	int selectedItemIndex;
-	sf::Font font;
-	sf::Text menu[NUM_ITEMS];
+	void setColor(sf::Sprite& letter, sf::Color color);
+	int getPressedItem() const { return selectedItemIndex; }
 };
 

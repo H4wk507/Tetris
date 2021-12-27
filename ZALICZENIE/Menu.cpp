@@ -1,61 +1,63 @@
 #include "Menu.h"
 
-
 Menu::Menu(double width, double height) {
-	if (!font.loadFromFile("ARIAL.ttf")) {
-		std::cerr << "Blad przy wczytywaniu czcionki.\n";
-	}
+	m_menu.resize(NUM_ITEMS);
+	font_texture.loadFromFile("Font.png");
 
-	const wchar_t* options[] = { L"Graj", L"Opcje", L"WyjdŸ" }; /* dostepne opcje */
+	double char_x = width;
+	double char_y = height;
+	double char_width = font_texture.getSize().x / 96;
+	
+	const std::vector<std::string> options = { "Graj", "Info", "Wyjdz" }; /* dostepne opcje */
+	sf::Sprite char_sprite;
+	size_t ITEM_SIZE;
+
 	for (int i = 0; i < NUM_ITEMS; i++) {
-		menu[i].setFont(font);
-		if (i == 0)
-			menu[i].setFillColor(sf::Color::Red);
-		else
-			menu[i].setFillColor(sf::Color::White);
-		menu[i].setString(options[i]);
-		menu[i].setPosition(sf::Vector2f(width / 2.0 - menu[i].getGlobalBounds().width / 2.0, 
-				height / (NUM_ITEMS + 1.0) * (i + 1.0)));
+		ITEM_SIZE = options[i].size();
+		m_menu[i].resize(ITEM_SIZE);
+		for (size_t j = 0; j < ITEM_SIZE; j++) {
+			char_sprite.setTexture(font_texture);
+			char_sprite.setPosition(char_x, char_y);
+			char_sprite.setTextureRect(sf::IntRect(char_width * (static_cast<double>(options[i][j]) - 32), 0, char_width, font_texture.getSize().y));
+			char_sprite.setColor((i == 0) ? sf::Color::Red : sf::Color::White);
+
+			char_x += char_width;
+			m_menu[i][j] = char_sprite;
+		}
+		char_x = width; // reset x
+		char_y += 2.0 * font_texture.getSize().y; // przenieœ y do nowej lini
 	}
 	selectedItemIndex = 0;
 }
 
 Menu::~Menu() { };
 
-void Menu::draw(sf::RenderWindow& window) {
-	for (const auto& option : menu)
-		window.draw(option);
+void Menu::draw(sf::RenderWindow& window) const {
+	for (const auto& option : m_menu)
+		for (const auto& letter : option)
+			window.draw(letter);
 }
 
 void Menu::MoveUp() {
 	if (selectedItemIndex > 0) {
-		menu[selectedItemIndex].setFillColor(sf::Color::White);
+		for (auto& letter : m_menu[selectedItemIndex])
+			setColor(letter, sf::Color::White);
 		selectedItemIndex--;
-		menu[selectedItemIndex].setFillColor(sf::Color::Red);
+		for (auto& letter : m_menu[selectedItemIndex])
+			setColor(letter, sf::Color::Red);
 	}
 }
 
-void Menu::MoveDown() {
+void Menu::MoveDown() {	
 	if (selectedItemIndex < NUM_ITEMS - 1) {
-		menu[selectedItemIndex].setFillColor(sf::Color::White);
+		for (auto& letter : m_menu[selectedItemIndex])
+			setColor(letter, sf::Color::White);
 		selectedItemIndex++;
-		menu[selectedItemIndex].setFillColor(sf::Color::Red);
+		for (auto& letter : m_menu[selectedItemIndex])
+			setColor(letter, sf::Color::Red);
 	}
 }
 
-int Menu::isMouseOver(sf::RenderWindow& window, int item) {
-	double mouseX = sf::Mouse::getPosition(window).x; 
-	double mouseY = sf::Mouse::getPosition(window).y;
-
-	double btnPosX = menu[item].getPosition().x; 
-	double btnPosY = menu[item].getPosition().y;
-
-	double btnPosXWidth = btnPosX + menu[item].getLocalBounds().width;
-	double btnPosYHeight = btnPosY + menu[item].getLocalBounds().height;
-
-	if (mouseX >= btnPosX && mouseX <= btnPosXWidth && mouseY >= btnPosY && mouseY <= btnPosYHeight) {
-		return item;
-	}
-
-	return -1;
+void Menu::setColor(sf::Sprite& letter, sf::Color color) {
+	letter.setColor(color);
 }
