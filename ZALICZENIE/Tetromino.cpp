@@ -1,6 +1,5 @@
 #include "Tetromino.h"
 
-/* move tetromino by 1 unit down */
 bool Tetromino::move_down(const std::vector<std::vector<int>>& i_matrix) {
 
 	for (const auto& mino : minos) {
@@ -10,10 +9,9 @@ bool Tetromino::move_down(const std::vector<std::vector<int>>& i_matrix) {
 	for (auto& mino : minos)
 		mino.y++;
 
-	return true; // everything's okay, return 1
+	return true;
 }
 
-/* move tetromino by 1 unit left */
 void Tetromino::move_left(const std::vector<std::vector<int>>& i_matrix) {
 
 	for (const auto& mino : minos) {
@@ -24,7 +22,6 @@ void Tetromino::move_left(const std::vector<std::vector<int>>& i_matrix) {
 		mino.x--;
 }
 
-/* move tetromino by 1 unit right */
 void Tetromino::move_right(const std::vector<std::vector<int>>& i_matrix) {
 	for (const auto& mino : minos) {
 		if (mino.x >= COLUMNS - 1 || i_matrix[mino.y][mino.x + 1.0])
@@ -34,7 +31,7 @@ void Tetromino::move_right(const std::vector<std::vector<int>>& i_matrix) {
 		mino.x++;
 }
 
-/* reset tetromino's position */
+/* zresetuj pozycje klocka */
 bool Tetromino::reset(const std::vector<std::vector<int>>& i_matrix) {
 	static const std::string options = "OIJLSTZ";
 	char option = options[m_shape];
@@ -96,7 +93,7 @@ bool Tetromino::reset(const std::vector<std::vector<int>>& i_matrix) {
 	return true; // gramy dalej
 }
 
-/* update matrix grid with current tetromino */
+/* zaktualizuj macierz obecnym klockiem */
 void Tetromino::update_matrix(std::vector<std::vector<int>>& i_matrix) const {
 	for (const auto& mino : minos)
 		i_matrix[mino.y][mino.x] = 1 + m_shape;
@@ -122,8 +119,7 @@ std::vector<sf::Vector2i> Tetromino::get_ghost_minos(const std::vector<std::vect
 		}
 	}
 	for (auto& mino : ghost_minos)
-		mino.y += dy - 1; // dy is the position that was invalid so we increase y by dy - 1
-	
+		mino.y += dy - 1; // dy to pozycja która by³a niew³aœciwa, wiêc dodajemy dy - 1
 	return ghost_minos;
 }	
 
@@ -132,7 +128,7 @@ bool Tetromino::isValidRotate(int x, int y, const std::vector<std::vector<int>> 
 }
 
 bool Tetromino::rotate(const std::vector<std::vector<int>> &i_matrix) {
-	sf::Vector2i p = minos[1]; // center of rotation point
+	sf::Vector2i p = minos[1]; // œrodek rotacji
 	std::vector<int> dx(4);
 	std::vector<int> dy(4);
 	for (int i = 0; i < 4; i++) {
@@ -151,7 +147,7 @@ void Tetromino::hard_drop(const std::vector<std::vector<int>>& i_matrix) {
 	minos = get_ghost_minos(i_matrix);
 }
 
-/*** getters ***/
+/* getters */
 std::vector<sf::Vector2i> Tetromino::get_minos() const {
 	return minos;
 }

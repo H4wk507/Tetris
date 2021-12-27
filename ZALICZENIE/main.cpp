@@ -13,21 +13,21 @@
 
 int main()
 {
-    /*** wczytaj okno ***/
+    /* wczytaj okno */
     sf::RenderWindow window;
     window.create(sf::VideoMode::VideoMode(2 * CELL_SIZE * COLUMNS * SCREEN_RESIZE,
         CELL_SIZE * ROWS * SCREEN_RESIZE), "Tetris", sf::Style::Default);
     window.setView(sf::View(sf::FloatRect(0, 0, 2 * CELL_SIZE * COLUMNS, CELL_SIZE * ROWS)));
     
-    /*** wczytaj menu ***/
+    /* wczytaj menu */
     Menu menu(0.8 * CELL_SIZE * COLUMNS, 0.25 * CELL_SIZE * ROWS);
     
-    /*** główna pętla ***/
+    /* główna pętla */
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
 
-            /*** input użytkownika ***/
+            /* input użytkownika */
             switch (event.type) {
             case sf::Event::KeyPressed:
                 switch (event.key.code) {
@@ -59,7 +59,7 @@ int main()
                 }
             }
         }
-        /*** rysuj na ekran ***/
+        /* rysuj na ekran */
         window.clear(sf::Color(1, 3, 50)); // ciemnoniebieski
         menu.draw(window);
         window.display();

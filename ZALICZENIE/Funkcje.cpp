@@ -1,23 +1,15 @@
 #include "Funkcje.h"
 #include "Tetromino.h"
 
-/*
-* wprowadz wallkicka
-* 
-* 
-* 
-*/
-
-/* color of certain cell */
 std::vector<sf::Color> cell_color{
-	sf::Color(1, 3, 50), // 
-	sf::Color(255, 255, 0),
-	sf::Color(0, 255, 255),
-	sf::Color(0, 0, 255),
-	sf::Color(255, 165, 0),
-	sf::Color(0, 128, 0),
-	sf::Color(128, 0, 128),
-	sf::Color(255, 0, 0),
+	sf::Color(1, 3, 50),      // ciemnoniebieski
+	sf::Color(255, 255, 0),   // ¿ó³ty
+	sf::Color(0, 255, 255),   // jasnoniebieski
+	sf::Color(0, 0, 255),     // niebieski
+	sf::Color(255, 165, 0),   // pomarañczowy
+	sf::Color(0, 128, 0),     // ciemnozielony
+	sf::Color(128, 0, 128),   // fioletowy
+	sf::Color(255, 0, 0),     // czerwony
 	sf::Color(127, 127, 127), // szary
 };
 
@@ -78,7 +70,7 @@ void restartGame(std::vector<std::vector<int>>& i_matrix, bool& game_over, int& 
 void startSinglePlayer(sf::RenderWindow& window) {
 	sf::RectangleShape cell(sf::Vector2f(CELL_SIZE - 1, CELL_SIZE - 1));
 
-	/*** preview border ***/
+	/* ramka dla nastêpnego klocka */
 	sf::RectangleShape preview_border(sf::Vector2f(5 * CELL_SIZE, 5 * CELL_SIZE));
 	preview_border.setFillColor(sf::Color(0, 0, 0));
 	preview_border.setOutlineThickness(-1);
@@ -97,13 +89,13 @@ void startSinglePlayer(sf::RenderWindow& window) {
 	std::mt19937 mt(rd());
 	std::uniform_int_distribution<int> distr(0, NUM_SHAPES - 1);
 
-	/*** wygeneruj pierwszy blok ***/
+	/* wygeneruj pierwszy blok */
 	Tetromino tmp(distr(mt), matrix);
 	Tetromino next(distr(mt), matrix);
 	tmp.reset(matrix);
 	next.reset(matrix);
 	
-	/*** glówna pêtla ***/
+	/* g³ówna pêtla */
 	while (window.isOpen()) {
 		double time = clock.getElapsedTime().asSeconds();
 		clock.restart();
@@ -113,31 +105,35 @@ void startSinglePlayer(sf::RenderWindow& window) {
 		bool rotate = 0;
 		bool harddrop = 0;
 
-		/*** handle user input ***/
+		/* input u¿ytkownika */
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			switch (event.type) {
 			case sf::Event::KeyPressed:
-				freeze = false;
 				switch (event.key.code) {
 				case sf::Keyboard::Left:
 					tmp.move_left(matrix);
+					freeze = false;
 					break;
 				case sf::Keyboard::Right:
-					tmp.move_right(matrix); 
+					tmp.move_right(matrix);
+					freeze = false;
 					break;
 				case sf::Keyboard::Up:
 					rotate = true;
+					freeze = false;
 					break;
 				case sf::Keyboard::Down:
 					tmp.move_down(matrix);
+					freeze = false;
 					break;
 				case sf::Keyboard::Space:
 					harddrop = true;
+					freeze = false;
 					break;
 				case sf::Keyboard::Escape:
 				case sf::Keyboard::P:
-					freeze = true;
+					freeze ^= true;
 					break;
 				case sf::Keyboard::R:
 					if (game_over)
@@ -152,13 +148,13 @@ void startSinglePlayer(sf::RenderWindow& window) {
 		}
 		window.clear();
 
-		/*** writing minos ***/
+		/* rysowanie klocków */
 		for (int y = 0; y < ROWS; y++) {
 			for (int x = 0; x < COLUMNS; x++) {
 				if (!clear_lines[y]) {
 					cell.setPosition(1.f * CELL_SIZE * x, 1.f * CELL_SIZE * y);
 					
-					// if game is over, turn every color to gray
+					// jeœli gra jest skoñczona, zamieñ kolor klocków na szary
 					if (game_over && matrix[y][x])
 						cell.setFillColor(cell_color[8]);
 					else
@@ -170,7 +166,7 @@ void startSinglePlayer(sf::RenderWindow& window) {
 							if (!tmp.move_down(matrix)) {
 								tmp.update_matrix(matrix);
 
-								/* check if any line has to be cleared */
+								/* sprawdŸ czy któr¹œ linie trzeba wyczyœciæ */
 								for (int row = 0; row < ROWS; row++) {
 									bool line_cleared = true;
 									for (int col = 0; col < COLUMNS; col++) {
@@ -180,12 +176,12 @@ void startSinglePlayer(sf::RenderWindow& window) {
 										}
 									}
 
-									/* line has to be cleared */
+									/* linia musi byæ wyczyszczona */
 									if (line_cleared) {
 										lines_cleared++;
 										clear_lines[row] = true;
 
-										/* przenies wszystke bloki z gory na dol */
+										/* przenieœ wszystke bloki z góry na dó³ */
 										for (size_t rr = row; rr > 0; rr--) {
 											for (size_t cc = 0; cc < COLUMNS; cc++) {
 												matrix[rr][cc] = matrix[rr - 1][cc];
@@ -219,6 +215,7 @@ void startSinglePlayer(sf::RenderWindow& window) {
 		if (rotate && tmp.get_shape() != 0)
 			tmp.rotate(matrix);
 		
+		/* harddrop */
 		cell.setFillColor(cell_color[tmp.get_shape() + 1]);
 		if (harddrop)
 			tmp.hard_drop(matrix);
@@ -256,6 +253,7 @@ void startSinglePlayer(sf::RenderWindow& window) {
 			window.draw(cell);
 		}
 		
+		/* text */
 		drawText(window, CELL_SIZE * (0.5f + COLUMNS), 0.5f * CELL_SIZE * ROWS, 
 			"Linie:" + std::to_string(lines_cleared) + "\nLevel:" + std::to_string(level));
 
