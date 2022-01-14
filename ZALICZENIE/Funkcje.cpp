@@ -19,7 +19,7 @@ void drawText(sf::RenderWindow& window, float x, float y, const std::string& tex
 
 	sf::Sprite char_sprite;
 	sf::Texture font_texture;
-	font_texture.loadFromFile("Font.png");
+	font_texture.loadFromFile("img/Font.png");
 
 	int char_width = font_texture.getSize().x / 96;
 	char_sprite.setTexture(font_texture);
@@ -133,7 +133,7 @@ void startSinglePlayer(sf::RenderWindow& window) {
 					break;
 				case sf::Keyboard::Escape:
 				case sf::Keyboard::P:
-					freeze ^= true;
+					freeze = !freeze;
 					break;
 				case sf::Keyboard::R:
 					if (game_over)
@@ -261,7 +261,7 @@ void startSinglePlayer(sf::RenderWindow& window) {
 			drawText(window, CELL_SIZE * (0.5f + COLUMNS), CELL_SIZE * ROWS * 0.5f, 
 				"\n\n\n(r)estart\n(q)uit");
 		if (freeze)
-			drawText(window, CELL_SIZE * 0.25f * COLUMNS, CELL_SIZE * ROWS * 0.5f, "Pause");
+			drawText(window, CELL_SIZE * 0.25f * COLUMNS, CELL_SIZE * ROWS * 0.5f, "Pauza");
 
 		window.display();
 	} // window

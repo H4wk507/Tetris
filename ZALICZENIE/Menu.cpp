@@ -2,7 +2,8 @@
 
 Menu::Menu(double width, double height) {
 	m_menu.resize(NUM_ITEMS);
-	font_texture.loadFromFile("Font.png");
+	if (font_texture.loadFromFile("img/Font.png") == -1)
+		exit(1);
 
 	double char_x = width;
 	double char_y = height;
