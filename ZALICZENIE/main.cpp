@@ -18,7 +18,7 @@ int main()
     window.create(sf::VideoMode::VideoMode(2 * CELL_SIZE * COLUMNS * SCREEN_RESIZE,
         CELL_SIZE * ROWS * SCREEN_RESIZE), "Tetris", sf::Style::Default);
     window.setView(sf::View(sf::FloatRect(0, 0, 2 * CELL_SIZE * COLUMNS, CELL_SIZE * ROWS)));
-    
+
     /* wczytaj menu */
     Menu menu(0.8 * CELL_SIZE * COLUMNS, 0.25 * CELL_SIZE * ROWS);
     

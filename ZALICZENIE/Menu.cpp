@@ -7,7 +7,7 @@ Menu::Menu(double width, double height) {
 
 	double char_x = width;
 	double char_y = height;
-	double char_width = font_texture.getSize().x / 96;
+	double char_width = font_texture.getSize().x / 100;
 	
 	const std::vector<std::string> options = { "Graj", "Info", "Wyjdz" }; /* dostepne opcje */
 	sf::Sprite char_sprite;

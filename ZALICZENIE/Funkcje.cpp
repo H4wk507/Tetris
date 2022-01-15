@@ -1,30 +1,30 @@
-#include "Funkcje.h"
+ï»¿#include "Funkcje.h"
 #include "Tetromino.h"
 
 std::vector<sf::Color> cell_color{
 	sf::Color(1, 3, 50),      // ciemnoniebieski
-	sf::Color(255, 255, 0),   // ¿ó³ty
+	sf::Color(255, 255, 0),   // Å¼Ã³Å‚ty
 	sf::Color(0, 255, 255),   // jasnoniebieski
 	sf::Color(0, 0, 255),     // niebieski
-	sf::Color(255, 165, 0),   // pomarañczowy
+	sf::Color(255, 165, 0),   // pomaraÅ„czowy
 	sf::Color(0, 128, 0),     // ciemnozielony
 	sf::Color(128, 0, 128),   // fioletowy
 	sf::Color(255, 0, 0),     // czerwony
 	sf::Color(127, 127, 127), // szary
 };
 
-void drawText(sf::RenderWindow& window, float x, float y, const std::string& text) {
-	float char_x = x;
-	float char_y = y;
+void drawText(sf::RenderWindow& window, double x, double y, const std::wstring& text) {
+	double char_x = x;
+	double char_y = y;
 
 	sf::Sprite char_sprite;
 	sf::Texture font_texture;
 	font_texture.loadFromFile("img/Font.png");
 
-	int char_width = font_texture.getSize().x / 96;
+	double char_width = font_texture.getSize().x / 100;
 	char_sprite.setTexture(font_texture);
 
-	for (const char& letter : text) {
+	for (const wchar_t& letter : text) {
 		if (letter == '\n') {
 			char_x = x;
 			char_y += font_texture.getSize().y;
@@ -32,7 +32,7 @@ void drawText(sf::RenderWindow& window, float x, float y, const std::string& tex
 		}
 
 		char_sprite.setPosition(char_x, char_y);
-		char_sprite.setTextureRect(sf::IntRect(char_width * (letter - 32), 0, char_width, font_texture.getSize().y));
+		char_sprite.setTextureRect(sf::IntRect(char_width * (static_cast<double>(letter) - 32), 0, char_width, font_texture.getSize().y));
 		char_sprite.setColor(sf::Color(255, 255, 255));
 		char_x += char_width;
 		window.draw(char_sprite);
@@ -53,9 +53,22 @@ void openInfo(sf::RenderWindow& window) {
 				}
 			}
 		}
-		window.clear(sf::Color(1, 3, 50));
-		drawText(window, 0.005f * CELL_SIZE * COLUMNS, 0.005f * CELL_SIZE * ROWS, "test");
 
+		constexpr wchar_t ARROW_UP    = 128;
+		constexpr wchar_t ARROW_DOWN  = 129;
+		constexpr wchar_t ARROW_RIGHT = 130;
+		constexpr wchar_t ARROW_LEFT  = 131;
+
+		window.clear(sf::Color(1, 3, 50));
+		drawText(window, 0.005 * CELL_SIZE * COLUMNS, 0.005 * CELL_SIZE * ROWS,
+			L"Sterowanie:\n Obrot:[" + std::wstring(1, ARROW_UP) + L"]\n "
+			L"Ruch w dol:[" + std::wstring(1, ARROW_DOWN) + L"]\n "
+			L"Ruch w prawo:[" + std::wstring(1, ARROW_RIGHT) + L"]\n "
+			L"Ruch w lewo:[" + std::wstring(1, ARROW_LEFT) + L"]\n "
+			L"Hard Drop:[Spacja]\n " 
+			L"Pauza:[Esc,P]\n " 
+			L"Restart:[R]\n " 
+			L"Wyjscie:[Esc,Q]\n ");
 		window.display();
 	}
 }
@@ -70,7 +83,7 @@ void restartGame(std::vector<std::vector<int>>& i_matrix, bool& game_over, int& 
 void startSinglePlayer(sf::RenderWindow& window) {
 	sf::RectangleShape cell(sf::Vector2f(CELL_SIZE - 1, CELL_SIZE - 1));
 
-	/* ramka dla nastêpnego klocka */
+	/* ramka dla nastÄ™pnego klocka */
 	sf::RectangleShape preview_border(sf::Vector2f(5 * CELL_SIZE, 5 * CELL_SIZE));
 	preview_border.setFillColor(sf::Color(0, 0, 0));
 	preview_border.setOutlineThickness(-1);
@@ -95,7 +108,7 @@ void startSinglePlayer(sf::RenderWindow& window) {
 	tmp.reset(matrix);
 	next.reset(matrix);
 	
-	/* g³ówna pêtla */
+	/* gÅ‚Ã³wna pÄ™tla */
 	while (window.isOpen()) {
 		double time = clock.getElapsedTime().asSeconds();
 		clock.restart();
@@ -105,7 +118,7 @@ void startSinglePlayer(sf::RenderWindow& window) {
 		bool rotate = 0;
 		bool harddrop = 0;
 
-		/* input u¿ytkownika */
+		/* input uÅ¼ytkownika */
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			switch (event.type) {
@@ -148,13 +161,13 @@ void startSinglePlayer(sf::RenderWindow& window) {
 		}
 		window.clear();
 
-		/* rysowanie klocków */
+		/* rysowanie klockÃ³w */
 		for (int y = 0; y < ROWS; y++) {
 			for (int x = 0; x < COLUMNS; x++) {
 				if (!clear_lines[y]) {
 					cell.setPosition(1.f * CELL_SIZE * x, 1.f * CELL_SIZE * y);
 					
-					// jeœli gra jest skoñczona, zamieñ kolor klocków na szary
+					// jeÅ›li gra jest skoÅ„czona, zamieÅ„ kolor klockÃ³w na szary
 					if (game_over && matrix[y][x])
 						cell.setFillColor(cell_color[8]);
 					else
@@ -162,11 +175,11 @@ void startSinglePlayer(sf::RenderWindow& window) {
 
 					if (timer > delay) {
 						if (!freeze) {
-							// jeœli klocek nie mo¿e dalej spadaæ, zaktualizuj macierz
+							// jeÅ›li klocek nie moÅ¼e dalej spadaÄ‡, zaktualizuj macierz
 							if (!tmp.move_down(matrix)) {
 								tmp.update_matrix(matrix);
 
-								/* sprawdŸ czy któr¹œ linie trzeba wyczyœciæ */
+								/* sprawdÅº czy ktÃ³rÄ…Å› linie trzeba wyczyÅ›ciÄ‡ */
 								for (int row = 0; row < ROWS; row++) {
 									bool line_cleared = true;
 									for (int col = 0; col < COLUMNS; col++) {
@@ -176,12 +189,12 @@ void startSinglePlayer(sf::RenderWindow& window) {
 										}
 									}
 
-									/* linia musi byæ wyczyszczona */
+									/* linia musi byÄ‡ wyczyszczona */
 									if (line_cleared) {
 										lines_cleared++;
 										clear_lines[row] = true;
 
-										/* przenieœ wszystke bloki z góry na dó³ */
+										/* przenieÅ› wszystke bloki z gÃ³ry na dÃ³Å‚ */
 										for (size_t rr = row; rr > 0; rr--) {
 											for (size_t cc = 0; cc < COLUMNS; cc++) {
 												matrix[rr][cc] = matrix[rr - 1][cc];
@@ -191,14 +204,14 @@ void startSinglePlayer(sf::RenderWindow& window) {
 									}
 								}
 								
-								// wygeneruj nastêpny blok
+								// wygeneruj nastÄ™pny blok
 								if (!game_over) {
 									tmp = next;
 									next = Tetromino(distr(mt), matrix);
 									next.reset(matrix);
 								}
 
-								// jeœli nie mo¿emy postawiæ bloku; koniec gry
+								// jeÅ›li nie moÅ¼emy postawiÄ‡ bloku; koniec gry
 								if (!tmp.reset(matrix))
 									game_over = true;
 							}
@@ -227,7 +240,7 @@ void startSinglePlayer(sf::RenderWindow& window) {
 			window.draw(cell);
 		}
 
-		/* narysuj spadaj¹cy blok */
+		/* narysuj spadajÄ…cy blok */
 		if (!game_over) {
 			cell.setFillColor(cell_color[tmp.get_shape() + 1]);
 			for (const auto& mino : tmp.get_minos()) {
@@ -236,7 +249,7 @@ void startSinglePlayer(sf::RenderWindow& window) {
 			}
 		}
 
-		/* narysuj okno z nastêpnym blokiem */
+		/* narysuj okno z nastÄ™pnym blokiem */
 		cell.setFillColor(cell_color[next.get_shape() + 1]);
 		cell.setSize(sf::Vector2f(CELL_SIZE - 1, CELL_SIZE - 1));
 		window.draw(preview_border);
@@ -254,14 +267,14 @@ void startSinglePlayer(sf::RenderWindow& window) {
 		}
 		
 		/* text */
-		drawText(window, CELL_SIZE * (0.5f + COLUMNS), 0.5f * CELL_SIZE * ROWS, 
-			"Linie:" + std::to_string(lines_cleared) + "\nLevel:" + std::to_string(level));
+		drawText(window, CELL_SIZE * (0.5 + COLUMNS), 0.5 * CELL_SIZE * ROWS, 
+			L"Linie:" + std::to_wstring(lines_cleared) + L"\nLevel:" + std::to_wstring(level));
 
 		if (game_over)
-			drawText(window, CELL_SIZE * (0.5f + COLUMNS), CELL_SIZE * ROWS * 0.5f, 
-				"\n\n\n(r)estart\n(q)uit");
+			drawText(window, CELL_SIZE * (0.5 + COLUMNS), 0.5 * CELL_SIZE * ROWS,
+				L"\n\n\n(r)estart\n(q)uit");
 		if (freeze)
-			drawText(window, CELL_SIZE * 0.25f * COLUMNS, CELL_SIZE * ROWS * 0.5f, "Pauza");
+			drawText(window, CELL_SIZE * 0.25 * COLUMNS, 0.5 * CELL_SIZE * ROWS, L"Pauza");
 
 		window.display();
 	} // window
