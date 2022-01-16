@@ -5,7 +5,7 @@
 
 class Menu {
 private:
-	int selectedItemIndex;
+	int selectedItemIndex{ 0 };
 	sf::Texture font_texture;
 	std::vector<std::vector<sf::Sprite>> m_menu;
 public:

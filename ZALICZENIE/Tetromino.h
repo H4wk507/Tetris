@@ -10,7 +10,7 @@ class Tetromino
 private:
 	std::vector<sf::Vector2i> minos; // vector czterech punktów
 	sf::Color m_color;
-	size_t m_shape;
+	size_t m_shape{ 0 };
 public:
 	Tetromino(size_t shape, std::vector<std::vector<int>>& i_matrix);
 	bool move_down(const std::vector<std::vector<int>>& i_matrix);

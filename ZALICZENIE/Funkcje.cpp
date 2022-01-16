@@ -21,7 +21,7 @@ void drawText(sf::RenderWindow& window, double x, double y, const std::wstring& 
 	sf::Texture font_texture;
 	font_texture.loadFromFile("img/Font.png");
 
-	double char_width = font_texture.getSize().x / 100;
+	double char_width = font_texture.getSize().x / 104;
 	char_sprite.setTexture(font_texture);
 
 	for (const wchar_t& letter : text) {
@@ -54,21 +54,16 @@ void openInfo(sf::RenderWindow& window) {
 			}
 		}
 
-		constexpr wchar_t ARROW_UP    = 128;
-		constexpr wchar_t ARROW_DOWN  = 129;
-		constexpr wchar_t ARROW_RIGHT = 130;
-		constexpr wchar_t ARROW_LEFT  = 131;
-
 		window.clear(sf::Color(1, 3, 50));
 		drawText(window, 0.005 * CELL_SIZE * COLUMNS, 0.005 * CELL_SIZE * ROWS,
-			L"Sterowanie:\n Obrot:[" + std::wstring(1, ARROW_UP) + L"]\n "
-			L"Ruch w dol:[" + std::wstring(1, ARROW_DOWN) + L"]\n "
-			L"Ruch w prawo:[" + std::wstring(1, ARROW_RIGHT) + L"]\n "
-			L"Ruch w lewo:[" + std::wstring(1, ARROW_LEFT) + L"]\n "
+			L"Sterowanie:\n Obr" + O_DASH + L"t:[" + ARROW_UP + L"]\n "
+			L"Ruch w d" + O_DASH + L_DASH + L":[" + ARROW_DOWN + L"]\n "
+			L"Ruch w prawo:[" + ARROW_RIGHT + L"]\n "
+			L"Ruch w lewo:[" + ARROW_LEFT + L"]\n "
 			L"Hard Drop:[Spacja]\n " 
 			L"Pauza:[Esc,P]\n " 
 			L"Restart:[R]\n " 
-			L"Wyjscie:[Esc,Q]\n ");
+			L"Wyj" + S_DASH + L"cie:[Esc,Q]\n ");
 		window.display();
 	}
 }
