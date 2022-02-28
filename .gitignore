@@ -362,10 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# vs
-*.sln
-*.vcxproj
-*.filters
-
 # sfml
-*.dll
+**/*.dll
